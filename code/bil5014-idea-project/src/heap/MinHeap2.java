@@ -1,11 +1,12 @@
 package heap;
 
-import java.util.Arrays;
-
-public class Zero {
+public class MinHeap2 {
     private Integer[] data;
 
-    public Zero(Integer[] data) {
+    public MinHeap2() {
+    }
+
+    public MinHeap2(Integer[] data) {
         this.data = data;
     }
 
@@ -52,8 +53,7 @@ public class Zero {
         if ((child1 > data.length - 1 || data[child1] == null) && (child2 > data.length - 1 || data[child2] == null)) return;
         else if (child1 > data.length - 1 || data[child1] == null) minChild = child2;
         else if (child2 > data.length - 1 || data[child2] == null) minChild = child1;
-
-        if (data[child1] < data[child2]) minChild = child1;
+        else if (data[child1] < data[child2]) minChild = child1;
         else minChild = child2;
 
         Integer temp = data[index];
@@ -61,5 +61,44 @@ public class Zero {
         data[minChild] = temp;
 
         heapify(minChild);
+    }
+
+    private void expand() {
+        Integer[] copy = new Integer[data.length * 2];
+        System.arraycopy(data, 0, copy, 0, data.length);
+        data = copy;
+    }
+
+    public void insert(Integer item) {
+        int i = data.length - 1;
+
+        if (data[i] != null) {
+            expand();
+        }
+
+        while (data[i] == null) {
+            i--;
+        }
+        i = i + 1;
+
+        data[i] = item;
+
+        while (i > 1) {
+            if (data[i / 2] > data[i]) {
+                Integer temp = data[i];
+                data[i] = data[i / 2];
+                data[i / 2] = temp;
+            } else break;
+            i = i / 2;
+        }
+    }
+
+    public void buildHeap(Integer[] input) {
+        data = input;
+        int i = data.length / 2;
+        while (i >= 1) {
+            heapify(i);
+            i--;
+        }
     }
 }
