@@ -5,39 +5,40 @@ import java.util.Stack;
 public class BFS {
     private static String[] color;
     private static int[] d;
-    private static String[] pred;
-    private static Stack<String> st;
-    // A
-    public static String[] bfs(Graph g, String s) {
+    private static Integer[] pred;
+    private static Stack<Integer> st;
+
+    public static Integer[] bfs(Graph g, String source) {
+        Integer s = g.mapLabelID.get(source);
+
         int n = g.data.length;
         color = new String[n];
         d = new int[n];
-        pred = new String[n];
+        pred = new Integer[n];
+
         for (int i = 0; i < n; i++) {
-            if (g.mapLabelID.get(s) == i) continue;
+            if (s == i) continue;
             color[i] = "white";
-            d[i] = Integer.MAX_VALUE;
-            pred[i] = "null";
+            //d[i] = Integer.MAX_VALUE;
+            pred[i] = null;
         }
-        color[g.mapLabelID.get(s)] = "gray";
-        d[g.mapLabelID.get(s)] = 0;
-        pred[g.mapLabelID.get(s)] = "null";
+        color[s] = "gray";
+        d[s] = 0;
+        pred[s] = null;
         st = new Stack<>();
         st.add(s);
 
         while (!st.isEmpty()) {
-            String u = st.pop();
-            int uInt = g.mapLabelID.get(u);
-            for (int vInt : g.data[uInt]) {
-                String v = g.mapIDLabel.get(vInt);
-                if (color[vInt].equals("white")) {
-                    color[vInt] = "gray";
-                    d[vInt] = d[uInt] + 1;
-                    pred[vInt] = u;
+            Integer u = st.pop();
+            for (int v : g.data[u]) {
+                if (color[v].equals("white")) {
+                    color[v] = "gray";
+                    d[v] = d[u] + 1;
+                    pred[v] = u;
                     st.add(v);
                 }
             }
-            color[uInt] = "black";
+            color[u] = "black";
         }
         return pred;
     }
