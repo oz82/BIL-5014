@@ -1,57 +1,63 @@
 package graph;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class Graph {
     private String type;
-    private Set<String> vertex;
-    private Set<String> edge;
-    private ArrayList<String>[] arrayOfQueue;
+    private HashMap<String, Integer> mapLabelID;
+    private HashMap<Integer, String> mapIDLabel;
+    private int[] inDegree;
+    private int[] outDegree;
+    private ArrayList<Integer>[] data;
+    private int numVertex;
 
-    public Graph(String type, Set<String> vertex, Set<String> edge) {
+    public Graph(String type, String v, String e) {
         this.type = type;
-        this.vertex = vertex;
-        this.edge = edge;
-        arrayOfQueue = new ArrayList[vertex.size()];
+        mapLabelID = new HashMap<>();
+        mapIDLabel = new HashMap<>();
+        String[] vArr = v.split(",");
+        String[] eArr = e.split(",");
 
-        int i = 0;
-        for (String v : vertex) {
-            arrayOfQueue[i] = new ArrayList<>();
-            arrayOfQueue[i].add(v);
-            i++;
+        int index = 0;
+        for (String s : vArr) {
+            if (mapLabelID.get(s) != null) {
+                System.out.println("Redundant vertex!");
+                System.exit(1);
+            }
+            mapLabelID.put(s, index);
+            mapIDLabel.put(index, s);
+            index++;
+        }
+        numVertex = index;
+
+        data = new ArrayList[numVertex];
+        for (int i = 0; i < numVertex; i++) {
+            data[i] = new ArrayList<>();
         }
 
-        for (ArrayList q : arrayOfQueue) {
-            for (String pair : edge) {
-                String[] temp = pair.split("-");
-                String v1 = temp[0];
-                String v2 = temp[1];
-                if (v1.equals(q.get(0))) q.add(v2);
+        for (String s : eArr) {
+            String[] edgeArr = s.split("-");
+            String left = edgeArr[0];
+            String right = edgeArr[1];
+            data[mapLabelID.get(left)].add(mapLabelID.get(right));
+        }
+
+        inDegree = new int[numVertex];
+        outDegree = new int[numVertex];
+        for (int i = 0; i < numVertex; i++) {
+            outDegree[i] = data[i].size();
+            ArrayList<Integer> list = data[i];
+            for (Integer item : data[i]) {
+                inDegree[item]++;
             }
         }
     }
 
-    public int inDegree(String s) {
-        int c = 0;
-        for (String pair : edge) {
-            String[] temp = pair.split("-");
-            String v1 = temp[0];
-            String v2 = temp[1];
-            if (s.equals(v2)) c++;
-        }
-        return c;
+    public int inDegree(String vertex) {
+        return inDegree[mapLabelID.get(vertex)];
     }
 
-    public int outDegree(String s) {
-        int c = 0;
-        for (String pair : edge) {
-            String[] temp = pair.split("-");
-            String v1 = temp[0];
-            String v2 = temp[1];
-            if (s.equals(v1)) c++;
-        }
-        return c;
+    public int outDegree(String vertex) {
+        return outDegree[mapLabelID.get(vertex)];
     }
 }
