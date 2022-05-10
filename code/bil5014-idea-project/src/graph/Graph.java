@@ -3,13 +3,13 @@ package graph;
 import java.util.*;
 
 public class Graph {
-    private String type;
-    private HashMap<String, Integer> mapLabelID;
-    private HashMap<Integer, String> mapIDLabel;
-    private int[] inDegree;
-    private int[] outDegree;
-    private ArrayList<Integer>[] data;
-    private int numVertex;
+    public String type;
+    public HashMap<String, Integer> mapLabelID;
+    public HashMap<Integer, String> mapIDLabel;
+    public int[] inDegree;
+    public int[] outDegree;
+    public ArrayList<Integer>[] data;
+    public int numVertex;
 
     public Graph(String type, String v, String e) {
         this.type = type;
